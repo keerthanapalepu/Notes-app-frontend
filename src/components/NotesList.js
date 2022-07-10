@@ -6,6 +6,7 @@ const NotesList = (props) => {
       {props.notes.map((note) => {
         return (
           <Note
+            _id={note._id}
             id={note.id}
             text={note.text}
             date={note.date}

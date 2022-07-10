@@ -2,7 +2,7 @@ import { MdDeleteForever } from "react-icons/md";
 
 const Note = (props) => {
   const handleDelete = (event) => {
-    props.delete(props.id);
+    props.delete(props.id,props._id);
   };
   return (
     <div className="note">

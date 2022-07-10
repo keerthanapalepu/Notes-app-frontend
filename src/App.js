@@ -2,28 +2,39 @@ import "./styles.css";
 import Search from "./components/Search";
 import NotesList from "./components/NotesList";
 import Header from "./components/Header";
-import { useState } from "react";
+import { useState , useEffect} from "react";
 import { nanoid } from "nanoid";
+import axios from "axios";
 export default function App() {
   const [searchText, setSearchText] = useState("");
   const [darkMode, setDarkMode] = useState(false);
   const [notes, setState] = useState([
     {
-      id: nanoid(),
-      text: "this is a first notes",
-      date: "10/07/2022"
+      _id: "",
+      id: "",
+      text: "",
+      date: ""
     },
-    {
-      id: nanoid(),
-      text: "this is a second notes",
-      date: "10/07/2022"
-    },
-    {
-      id: nanoid(),
-      text: "this is a third notes",
-      date: "10/07/2022"
-    }
   ]);
+
+  const getNotes = async () =>
+    {
+      var response = fetch('http://localhost:8080/notes')
+         .then(function(response){
+            return response.json();
+          })
+         .then(function(myJson) {
+          setState(myJson);
+          });
+    }
+  useEffect(() => {
+    getNotes();
+  }, []);
+
+  const postNotes = async(newNote) => {
+      await axios.post("http://localhost:8080/notes", {id: newNote.id,text: newNote.text,date: newNote.date});
+  }
+
   const addNote = (text) => {
     const date = new Date();
     const newNote = {
@@ -31,13 +42,20 @@ export default function App() {
       text: text,
       date: date.toLocaleDateString()
     };
+    postNotes(newNote)
     const newNotes = [...notes, newNote];
     setState(newNotes);
   };
-  const deleteNote = (id) => {
+
+  const deleteNotes = async (_id) => {
+
+    await axios.delete("http://localhost:8080/notes/"+_id);
+}
+  const deleteNote = (id,_id) => {
     const newNotes = notes.filter((note) => {
       return note.id !== id;
     });
+    deleteNotes(_id);
     setState(newNotes);
   };
   return (
